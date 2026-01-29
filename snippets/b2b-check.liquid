@@ -1,0 +1,29 @@
+{%- assign is_b2b_customer = false -%}
+
+{%- comment %}
+  1) New Shopify B2B — via cart.buyer_identity
+{% endcomment -%}
+{%- if cart and cart.buyer_identity and cart.buyer_identity.customer and cart.buyer_identity.customer.b2b? -%}
+  {%- assign is_b2b_customer = true -%}
+{%- endif -%}
+
+{%- comment %}
+  2) Customer has b2b? flag
+{% endcomment -%}
+{%- if customer and customer.b2b? -%}
+  {%- assign is_b2b_customer = true -%}
+{%- endif -%}
+
+{%- comment %}
+  3) Company profile
+{% endcomment -%}
+{%- if customer and (customer.company or customer.current_company) -%}
+  {%- assign is_b2b_customer = true -%}
+{%- endif -%}
+
+{%- comment %}
+  4) Trade tags
+{% endcomment -%}
+{%- if customer and (customer.tags contains 'b2b' or customer.tags contains 'trade' or customer.tags contains 'wholesale') -%}
+  {%- assign is_b2b_customer = true -%}
+{%- endif -%}   

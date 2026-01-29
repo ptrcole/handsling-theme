@@ -1,0 +1,24 @@
+window.klarnaAsyncCallback = function () {
+  window.Klarna.Payments.Buttons.init({
+    client_id: "klarna_live_client_cCV4Y2JJWkxaMFZtUT9jcWxkI2R0eDRiRDU0WjF1NzQsMzIyNmMwZDktZjg5NS00MTI0LThjMjgtMzE2NWE5YTI2OTcwLDEsWFNJaVNNZHEySVNYajdyM2pHK0tLNXdIa2gwczZoRmUyYitqWWpOS3U3RT0",
+  }).load(
+    {
+      container: "#container",
+      theme: "default",
+      shape: "default",
+      on_click: (authorize) => {
+        // Here you should invoke authorize with the order payload.
+        authorize(
+          { collect_shipping_address: true },
+          payload, // order payload 
+          (result) => {
+            // The result, if successful contains the authorization_token
+          },
+        );
+      },
+    },
+    function load_callback(loadResult) {
+      // Here you can handle the result of loading the button
+    },
+  );
+};

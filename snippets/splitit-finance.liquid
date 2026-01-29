@@ -1,0 +1,72 @@
+{% comment %} Monthly Pricing Snippet: Dynamic via options:price with Base Label Switch {% endcomment %}
+
+<!-- Monthly Pricing Display with Finance Link -->
+<div class="splitit-finance text-sm text-subdued" style="color: white; margin-bottom: 1px;">
+  {% assign initial_monthly = product.price | divided_by: 12 %}
+  or from <span class="monthly-amount">{{ initial_monthly | money }}</span>/month
+  <a href="https://handslingbikes.com/pages/finance-splitit" target="_blank" class="link">
+    interest-free payments
+  </a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var baseLabel  = document.getElementById('base-price-label');
+    var amountSpans = document.querySelectorAll('.monthly-amount');
+    var variantSelect = document.querySelector('select[name="id"]');
+    var manualLink = document.getElementById('splitit-manual-link');
+    var oneLiner = document.getElementById('splititOneLiner');
+
+    function getCurrentCurrency(fallback) {
+      if (window.Shopify && Shopify.currency && Shopify.currency.active) return Shopify.currency.active;
+      if (window.ShopifyAnalytics && ShopifyAnalytics.meta && ShopifyAnalytics.meta.currency) return ShopifyAnalytics.meta.currency;
+      return fallback;
+    }
+
+    function updateMonthly(priceCents, fallbackCurrency) {
+      // Update base label text
+      if (baseLabel) baseLabel.textContent = 'Your Total Spec Price';
+
+      // Calculate monthly
+      var majorUnit = priceCents / 100;
+      var monthly = majorUnit / 12;
+
+      // Determine currency each time
+      var currency = getCurrentCurrency(fallbackCurrency || '{{ shop.currency }}');
+      var locale = currency === 'EUR' ? 'en-IE' : 'en-GB';
+
+      // Format
+      var formatted = new Intl.NumberFormat(locale, {
+        style: 'currency', currency: currency, minimumFractionDigits: 2, maximumFractionDigits: 2
+      }).format(monthly);
+
+      // Update spans
+      amountSpans.forEach(function(span) { span.textContent = formatted; });
+
+      // Update component
+      if (oneLiner) oneLiner.setAttribute('amount', priceCents);
+    }
+
+    // Trigger splitit modal
+    if (manualLink && oneLiner && typeof oneLiner.showLearnMore === 'function') {
+      manualLink.addEventListener('click', function(e) {
+        e.preventDefault(); oneLiner.showLearnMore();
+      });
+    }
+
+    // Listen for options:price
+    window.addEventListener('options:price', function(e) {
+      var detail = e.detail || {};
+      if (typeof detail.price === 'number') updateMonthly(detail.price, detail.currency);
+    });
+
+    // Fallback: variant select change
+    if (variantSelect) {
+      variantSelect.addEventListener('change', function(e) {
+        var opt = e.target.selectedOptions[0];
+        var cents = parseInt(opt.getAttribute('data-price'), 10);
+        if (!isNaN(cents)) updateMonthly(cents, '{{ shop.currency }}');
+      });
+    }
+  });
+</script>

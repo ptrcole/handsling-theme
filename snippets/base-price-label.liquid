@@ -1,0 +1,17 @@
+{% comment %} Base Price Snippet: Displays "Base Price" initially, then switches to "Your Total Spec Price" when the selected spec price updates {% endcomment %}
+
+<!-- Base Price Label -->
+<div id="base-price-label" class="text-sm">
+  Base Price
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    window.addEventListener('options:price', function() {
+      var label = document.getElementById('base-price-label');
+      if (label) {
+        label.textContent = 'Your Total Spec Price';
+      }
+    });
+  });
+</script>
