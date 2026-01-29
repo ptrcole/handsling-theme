@@ -1,0 +1,326 @@
+{%- comment -%}
+  ------------------------------------------------------------------------------------------------------------------------
+  NOTE TO DEVELOPERS: welcome to Impact theme! We hope that you will enjoy editing this theme as much as we did for
+    developing it. We have put a lot of work to make this theme as developer friendly as possible by offering you
+    hooks to integrate into critical parts of the theme. You will find the complete technical documentation (including
+    all events, dependencies...) in the "documentation.txt" file, located in the Assets folder.
+  ------------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<!doctype html>
+
+<html lang="{{ request.locale.iso_code }}" dir="{% render 'direction' %}">
+  <head>
+   
+    <!-- 1. load Google Tag Manager first -->
+    <script data-cookieconsent="ignore">
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;
+      j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-KFWJ3H8');
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- 2. Cookiebot CMP -->
+    <script
+      id="Cookiebot"
+      src="https://consent.cookiebot.com/uc.js"
+      data-cbid="88e29ce4-1a85-4a4e-bdbb-78a92f39e61c"
+      data-blockingmode="auto"
+      type="text/javascript"
+    ></script>
+
+    <!-- 3. Create 3 triggers in Google Tag Manager, which are fired upon custom event cookie_consent_[category] category = {preferences, statistics, marketing} -->
+
+    <!-- 4. subsequent script shouild wait for consent -->
+    <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
+
+    <script
+      src="https://www.paypal.com/sdk/js?client-id=AZDLed86IQYrPSuIJV4Xpmclx_Q1qXEJDyvdvR98hokmSzwVaQhvdRbXlrvtyCr98hBMLrOX28cyDnUN&currency=GBP&components=messages"
+      data-namespace="PayPalSDK"
+    ></script>
+
+    <script
+      async="false"
+      data-environment="production"
+      src="https://js.klarna.com/web-sdk/v1/klarna.js"
+      data-client-id="klarna_live_client_cCV4Y2JJWkxaMFZtUT9jcWxkI2R0eDRiRDU0WjF1NzQsMzIyNmMwZDktZjg5NS00MTI0LThjMjgtMzE2NWE5YTI2OTcwLDEsWFNJaVNNZHEySVNYajdyM2pHK0tLNXdIa2gwczZoRmUyYitqWWpOS3U3RT0"
+    ></script>
+
+    <meta charset="utf-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0, maximum-scale=1.0"
+    >
+    <meta name="theme-color" content="{{ settings.header_background }}">
+
+    <title>
+      {% if page_title == blank -%}
+        {{- shop.name -}}
+      {%- else -%}
+        {{- page_title -}}
+        {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif -%}
+      {%- endif %}
+    </title>
+
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon -%}
+      <link rel="shortcut icon" href="{{ settings.favicon | image_url: width: 96 }}">
+      <link rel="apple-touch-icon" href="{{ settings.favicon | image_url: width: 180 }}">
+    {%- endif -%}
+
+    <script async src="https://cdn.salesfire.co.uk/code/cc7b7144-5911-40e6-9a2d-abc3ffb9c75e.js"></script>
+
+
+<script type="text/javascript">
+
+  merchantWidgetScript.addEventListener('load', function () {
+
+    merchantwidget.start({
+
+      position: 'LEFT_BOTTOM',
+
+      sideMargin: 21,
+
+      bottomMargin: 50,
+
+      mobileSideMargin: 11,
+
+      mobileBottomMargin: 50
+
+    });
+
+  });
+
+</script>
+
+{% if template.name contains 'product' %}
+  <script>
+    (function () {
+      if (!window.location.search) return;
+
+      const params = new URLSearchParams(window.location.search);
+
+      // Keep variant param if present
+      const variant = params.get('variant');
+
+      // Clean URL: remove _pos, _sid, _ss, etc.
+      params.delete('_pos');
+      params.delete('_sid');
+      params.delete('_ss');
+
+      let newSearch = params.toString();
+      let newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '');
+
+      if (window.location.search !== newSearch) {
+        window.history.replaceState({}, '', newUrl);
+      }
+    })();
+  </script>
+{% endif %}
+
+    {%- comment -%}Few prefetch to increase performance on commonly used third-parties{%- endcomment -%}
+    <link rel="preconnect" href="https://cdn.shopify.com">
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="dns-prefetch" href="https://productreviews.shopifycdn.com">
+
+    {%- unless settings.heading_font.system? -%}
+      <link rel="preload" href="{{ settings.heading_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- unless settings.text_font.system? -%}
+      <link rel="preload" href="{{ settings.text_font | font_url }}" as="font" type="font/woff2" crossorigin>
+    {%- endunless -%}
+
+    {%- render 'social-meta-tags' -%}
+    {%- render 'microdata-schema' -%}
+    {%- render 'css-variables' -%}
+    {%- render 'js-variables' -%}
+
+    <script>
+      if (!(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) {
+        const importMapPolyfill = document.createElement('script');
+        importMapPolyfill.async = true;
+        importMapPolyfill.src = "{{ 'es-module-shims.min.js' | asset_url }}";
+
+        document.head.appendChild(importMapPolyfill);
+      }
+    </script>
+
+    <script type="importmap">
+      {%- comment -%}On Safari 16.3 and lower, a polyfill is used to load importmap{%- endcomment -%}
+      {
+        "imports": {
+          "vendor": "{{ 'vendor.min.js' | asset_url }}",
+          "theme": "{{ 'theme.js' | asset_url }}",
+          "photoswipe": "{{ 'photoswipe.min.js' | asset_url }}"
+        }
+      }
+    </script>
+
+    <script type="module" src="{{ 'vendor.min.js' | asset_url }}"></script>
+    <script type="module" src="{{ 'theme.js' | asset_url }}"></script>
+
+    <script>
+      window._browsee = window._browsee || function () { (_browsee.q = _browsee.q || []).push(arguments) }; _browsee('init', '85f69205448e9f8ab78141165042a1cb50ae74663bcce164');
+    </script>
+    <script async="false" src="https://cdn.browsee.io/js/browsee.min.js"></script>
+
+    <script
+      api-key="fc0102be-98bc-4766-bdf7-955c0cc6b5bb"
+      lang="en-US"
+      currency="GBP"
+      env="production"
+      src="//web-components.splitit.com/upstream.js"
+      default-installments="12"
+      defer
+    ></script>
+
+    {{ content_for_header }}
+
+    <link rel="preload" as="style" href="{{ 'theme.css' | asset_url }}" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="{{ 'theme.css' | asset_url }}"></noscript>
+
+
+    {% if request.path contains '/blogs/news' %}
+  <meta name="robots" content="noindex, nofollow">
+{% endif %}
+
+    <!-- Facebook Pixel Base Code (Only if not already present) -->
+    <script>
+      if (typeof window.fbq !== 'function') {
+        !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+        n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+        document,'script','https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '1419044232299989');
+        fbq('track', 'PageView');
+      }
+    </script>
+    <noscript>
+      <img
+        height="1"
+        width="1"
+        style="display:none"
+        src="https://www.facebook.com/tr?id=1419044232299989&ev=PageView&noscript=1"
+      >
+    </noscript>
+
+<script>
+  window.handsling_is_b2b = false;
+  {% if customer %}
+    {% if customer.b2b? or customer.company or customer.current_company or customer.tags contains 'b2b' or customer.tags contains 'trade' or customer.tags contains 'wholesale' %}
+      window.handsling_is_b2b = true;
+    {% endif %}
+  {% endif %}
+</script>
+
+  </head>
+
+  <body class="{% if settings.zoom_image_on_hover %}zoom-image--enabled{% endif %}">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-KFWJ3H8"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    {% unless product == empty %}
+      <script type="application/json" data-live-variant-options-ids data-variant-observer>
+        {
+          {%- for option in product.options_with_values -%}
+            {%- if forloop.first == false -%},{%- endif -%}
+            "{{ option.position }}": [
+              {%- for option_value in option.values -%}
+                {%- if forloop.first == false -%},{%- endif -%}
+                { "id": {{ option_value.id }}, "name": "{{ option_value.name }}" }
+              {%- endfor -%}
+            ]
+          {%- endfor -%}
+        }
+      </script>
+    {% endunless %}
+
+    <script>
+  window.addEventListener('options:price', function(e) {
+    const priceInCents = e.detail.price;
+    const productTitle = document.querySelector('#product-data')?.dataset?.productTitle?.toLowerCase() || '';
+
+    let discount = 0;
+    if (productTitle.includes('dura-ace') || productTitle.includes('red e1') || productTitle.includes('SRAM RED AXS E1') || productTitle.includes('super record')) {
+      discount = 50000;
+    } else if (productTitle.includes('ultegra') || productTitle.includes('force') || productTitle.includes('classified')) {
+      discount = 40000;
+    } else if (productTitle.includes('105 di2') || productTitle.includes('rival')) {
+      discount = 30000;
+    } else if (productTitle.includes('mechanical')) {
+      discount = 20000;
+    }
+
+    const comparePrice = priceInCents + discount;
+
+    const formatCurrency = (value) => {
+      return new Intl.NumberFormat('en-GB', {
+        style: 'currency',
+        currency: 'GBP'
+      }).format(value / 100);
+    };
+
+    // Update every “Compare at” price on the page
+    document.querySelectorAll('.dynamic-compare-price').forEach(el => {
+      el.textContent = formatCurrency(comparePrice);
+    });
+
+    // Update every “Save” badge on the page
+    document.querySelectorAll('.dynamic-discount-badge').forEach(el => {
+      el.textContent = `Save ${formatCurrency(discount)}`;
+    });
+  });
+    </script>
+
+    {%- render 'shadow-dom-templates' -%}
+
+    <a href="#main" class="skip-to-content sr-only">{{ 'general.accessibility.skip_to_content' | t }}</a>
+
+    {%- if request.page_type != 'password' -%}
+      {%- sections 'header-group' -%}
+      {%- sections 'overlay-group' -%}
+
+      {%- if settings.cart_type == 'popover' -%}
+        <cart-notification-drawer open-from="bottom" class="quick-buy-drawer drawer"></cart-notification-drawer>
+      {%- endif -%}
+    {%- endif -%}
+
+    {%- if request.page_type == 'customers/account'
+      or request.page_type == 'customers/order'
+      or request.page_type == 'customers/addresses'
+    -%}
+      {%- section 'account-banner' -%}
+    {%- endif -%}
+
+    <script src="https://x.klarnacdn.net/kp/lib/v1/api.js" async></script>
+
+    <main role="main" id="main" class="anchor">
+      {{ content_for_layout }}
+
+      {%- comment -%}
+        IMPLEMENTATION NOTE: due to the very complex logic of margin/padding collapsing in Impact, the footer group is
+        added into the main element to ensure that dynamic sections added into the footer group are properly laid out.
+      {%- endcomment -%}
+      {%- if request.page_type != 'password' -%}
+        {%- sections 'footer-group' -%}
+      {%- endif -%}
+    </main>
+  </body>
+</html>
